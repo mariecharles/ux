@@ -1046,6 +1046,79 @@ And in your component template you can access your embedded block
         {% block footer %}{% endblock %}
      </div>
 
+Anonymous TwigComponent
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Sometimes, reusable elements do not require complex logic or injected service to render what it could be processed
+from one template itself. (e.g. retrieving a customized primary button that could take a different label).
+
+No need for class. Your component matches the namespace of the file you created where components live (see `Twig Template Namespaces`_).
+
+.. code-block:: html+twig
+
+    {# templates/components/Button/Primary.html.twig #}
+    <button class="primary">
+        {% block content %}
+        {% endblock %}
+    </button>
+
+Then use your component with ``:`` to navigate through the directories:
+
+.. code-block:: html+twig
+
+     {# index.html.twig #}
+     ...
+    <div>
+       <twig:Button:Primary>
+           Click Me!
+       </twig:primary>
+    </div>
+
+Now let's pass props to your button by defining a {% props %} tag in its view.
+It allows to declare which props are required and which have a default value.
+
+For a required prop "label", and one optional prop "primary":
+
+.. code-block:: html+twig
+
+    {# templates/components/Button.html.twig #}
+    {% props label, primary = true %}
+
+    <button class="{{ primary ? 'primary' : 'secondary' }} large rounded">
+        {{ label }}
+    </button>
+
+Then use it:
+
+.. code-block:: html+twig
+
+     {# index.html.twig #}
+     ...
+    <div>
+       <twig:Button label="Click Me!" />
+    </div>
+
+You can also define your component to allow overwriting attributes:
+
+.. code-block:: html+twig
+
+    {# templates/components/Button.html.twig #}
+    {% props label, primary = true %}
+
+    <button {{ attributes.defaults({class: primary ? 'primary' : 'secondary'}) }}>
+        {{ label }}
+    </button>
+
+And use it like so:
+
+.. code-block:: html+twig
+
+     {# index.html.twig #}
+     ...
+    <div>
+        <twig:Button label="Click Me!" :primary="false" />
+    </div>
+
 Test Helpers
 ------------
 
